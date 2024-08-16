@@ -2,44 +2,57 @@
 
 /* appearance */
 static const unsigned int borderpx  = 2;        /* border pixel of windows */
-static const unsigned int gappx     = 10;        /* gaps between windows */
+static const unsigned int gappx     = 10;       /* gaps between windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-/*static const char *fonts[]          = { "monospace:size=10" };*/
-static const char *fonts[]                = { "Fira Code Nerd Font Mono:size=11", "NotoColorEmoji:pixelsize=16:antialias=true:autohint=true"  };
-static const char dmenufont[]       = "monospace:size=10";
+static const char *fonts[]          = { "monospace:size=12", "Fira Code Nerd Font Mono:size=15"};
+static const char dmenufont[]       = "monospace:size=12";
 static const char col_gray1[]       = "#222222";
 static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
 static const char col_gray4[]       = "#eeeeee";
+static const char col_normal_fg[]   = "#919090";
+static const char col_selected_fg[] = "#000000";
+static const char col_selected_bg[] = "#faee02";
+static const char col_tag_bg[]      = "#000000";
+static const char col_occ_fg[]	    = "#ffffff";
+static const char col_pinned_fg[]   = "#ffffff";
 static const char col_cyan[]        = "#005577";
 static const char col_red[]         = "#EE0000";
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
-	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
+	/*[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },*/
+	[SchemeNorm] = { col_occ_fg, col_tag_bg, col_gray2 },
 	/*[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },*/
-	[SchemeSel]  = { col_gray4, col_cyan,  col_red},
+	/*[SchemeSel]  = { col_gray4, col_cyan,  col_red},*/
+	[SchemeSel]  = { col_occ_fg, col_tag_bg,  col_red},
 };
 
+static const char *tagsel[][2] = {
+   /*   fg            bg    */
+  { col_normal_fg,    col_tag_bg}, /* norm */
+  { col_selected_fg,  col_selected_bg}, /* sel */
+  { col_occ_fg,       col_tag_bg}, /* occ but not sel */
+  { col_pinned_fg,    col_tag_bg}, /* has pinned tag */
+};
 /* tagging */
-static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+/*static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };*/
+static const char *tags[] = { "", "", "", "", "", "", "", "", "" };
 
 static const Rule rules[] = {
 	/* xprop(1):
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Terminator",     NULL,       NULL,       0,            1,           -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+	/* class        instance      title        tags mask     isfloating   monitor */
+	{ "Terminator", NULL,         NULL,         0,           1,           -1 },
 };
 
 /* layout(s) */
-static const float mfact     = 0.6; /* factor of master area size [0.05..0.95] */
+static const float mfact     = 0.78; /* factor of master area size [0.05..0.95] */
 static const int nmaster     = 1;    /* number of clients in master area */
-static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
+static const int resizehints = 0;    /* 1 means respect size hints in tiled resizals */
 static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
 
 static const Layout layouts[] = {
@@ -107,7 +120,17 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "alacritty", NULL };
 static const char *wallpaperchangecmd[]  = { "set_random_wallpaper.sh", NULL };
+static const char *maintagcmd[]  = { "main_tag.sh", NULL };
+static const char *browsercmd[]  = { "browser_start.sh", NULL };
 static const char *launchercmd[] = { "rofi", "-show", "drun", NULL };
+
+
+Autostarttag autostarttaglist[] = {
+	{.cmd = browsercmd, .tags = 1 << 1 },
+	{.cmd = maintagcmd, .tags = 1 << 0 },
+	{.cmd = wallpaperchangecmd, .tags = 1 << 0 },
+	{.cmd = NULL, .tags = 0 },
+};
 
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -115,9 +138,10 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY,	                XK_t,	   spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_r,      spawn,          {.v = launchercmd} }, // spawn rofi for launching other programs
-	{ MODKEY|ShiftMask,                       XK_w,      spawn,          {.v = wallpaperchangecmd} }, // change wallpaper
+	{ MODKEY|ShiftMask,             XK_w,      spawn,          {.v = wallpaperchangecmd} }, // change wallpaper
+	{ MODKEY,			XK_b,      spawn,          {.v = browsercmd} }, // spawn browser
 	/* navigation and focus */
-	{ MODKEY,                       XK_b,      togglebar,      {0} },
+	{ MODKEY|ShiftMask,             XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
 	{ MODKEY,			XK_i,      viewnext,       {0} },
@@ -127,7 +151,8 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
 	{ MODKEY,                       XK_Return, zoom,           {0} },
-	{ MODKEY,                       XK_Tab,    view,           {0} },
+	/*{ MODKEY,                       XK_Tab,    view,           {0} },*/
+	{ MODKEY,                       XK_Escape,    view,           {0} },
 	{ MODKEY,	                XK_q,      killclient,     {0} },
 	{ MODKEY|ShiftMask,             XK_t,      setlayout,      {.v = &layouts[0]} },
 	{ MODKEY|ShiftMask,             XK_f,      setlayout,      {.v = &layouts[1]} },
