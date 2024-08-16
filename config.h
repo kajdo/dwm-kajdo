@@ -47,6 +47,7 @@ static const Rule rules[] = {
 	 */
 	/* class        instance      title        tags mask     isfloating   monitor */
 	{ "Terminator", NULL,         NULL,         0,           1,           -1 },
+	{ "AlacrittyScratchpad", NULL,         NULL,         0,           1,           -1 },
 };
 
 /* layout(s) */
@@ -58,8 +59,8 @@ static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen win
 static const Layout layouts[] = {
 	/* symbol     arrange function */
 	{ "[]=",      tile },    /* first entry is default */
-	{ "><>",      NULL },    /* no layout function means floating behavior */
 	{ "[M]",      monocle },
+	{ "><>",      NULL },    /* no layout function means floating behavior */
 };
 
 /* key definitions */
@@ -119,6 +120,7 @@ viewprev(const Arg *arg) {
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "alacritty", NULL };
+static const char *scratchcmd[]  = { "scratch", NULL };
 static const char *wallpaperchangecmd[]  = { "set_random_wallpaper.sh", NULL };
 static const char *maintagcmd[]  = { "main_tag.sh", NULL };
 static const char *browsercmd[]  = { "browser_start.sh", NULL };
@@ -137,6 +139,7 @@ static const Key keys[] = {
 	/* running scripts and programs */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY,	                XK_t,	   spawn,          {.v = termcmd } },
+	{ MODKEY|ShiftMask,	        XK_t,	   spawn,          {.v = scratchcmd} },
 	{ MODKEY,                       XK_r,      spawn,          {.v = launchercmd} }, // spawn rofi for launching other programs
 	{ MODKEY|ShiftMask,             XK_w,      spawn,          {.v = wallpaperchangecmd} }, // change wallpaper
 	{ MODKEY,			XK_b,      spawn,          {.v = browsercmd} }, // spawn browser
