@@ -38,7 +38,8 @@ static const char *tagsel[][2] = {
 };
 /* tagging */
 /*static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };*/
-static const char *tags[] = { "", "", "", "", "", "", "", "", "" };
+// Icons from: https://www.nerdfonts.com/cheat-sheet
+static const char *tags[] = { "", "", "", "", "", "󱀁", "", "", "󰄙" };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -47,6 +48,7 @@ static const Rule rules[] = {
 	 */
 	/* class        instance      title        tags mask     isfloating   monitor */
 	{ "Terminator", NULL,         NULL,         0,           1,           -1 },
+	{ "Brave-browser", NULL,         "Bitwarden",         0,           1,           -1 },
 	{ "AlacrittyScratchpad", NULL,         NULL,         0,           1,           -1 },
 };
 
@@ -124,7 +126,8 @@ static const char *scratchcmd[]  = { "scratch", NULL };
 static const char *wallpaperchangecmd[]  = { "set_random_wallpaper.sh", NULL };
 static const char *maintagcmd[]  = { "main_tag.sh", NULL };
 static const char *browsercmd[]  = { "browser_start.sh", NULL };
-static const char *launchercmd[] = { "rofi", "-show", "drun", NULL };
+/*static const char *launchercmd[] = { "rofi", "-show", "drun", NULL };*/
+static const char *launchercmd[] = { "rofi_launch.sh", NULL };
 
 
 Autostarttag autostarttaglist[] = {
