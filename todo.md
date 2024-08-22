@@ -8,6 +8,7 @@
 ## Patches to be applied
 - [ ] pertag for more flexible layouts
 - [ ] transparent statusbar - which should also fix the border issue (border color should be solid and not transparent)
+- [ ] round corners (by dwm, so that the border is correctly shown)
 
 ## Bugs to be fixed
 

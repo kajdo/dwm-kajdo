@@ -128,6 +128,7 @@ static const char *maintagcmd[]  = { "main_tag.sh", NULL };
 static const char *browsercmd[]  = { "browser_start.sh", NULL };
 /*static const char *launchercmd[] = { "rofi", "-show", "drun", NULL };*/
 static const char *launchercmd[] = { "rofi_launch.sh", NULL };
+static const char *screenshotcmd[] = { "flameshot", "gui", NULL };
 
 
 Autostarttag autostarttaglist[] = {
@@ -146,6 +147,7 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_r,      spawn,          {.v = launchercmd} }, // spawn rofi for launching other programs
 	{ MODKEY|ShiftMask,             XK_w,      spawn,          {.v = wallpaperchangecmd} }, // change wallpaper
 	{ MODKEY,			XK_b,      spawn,          {.v = browsercmd} }, // spawn browser
+	{ MODKEY|ShiftMask,             XK_s,      spawn,          {.v = screenshotcmd} }, // take a screenshot
 	/* navigation and focus */
 	{ MODKEY|ShiftMask,             XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
