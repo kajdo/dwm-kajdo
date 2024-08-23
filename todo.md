@@ -1,5 +1,5 @@
 ## Features missing
-- [ ] "traybar"
+- [ ] "traybar" -- trayer might be a better option than systray patch
 - [x] clock in statusbar
 - [x] tags with icons instead of numbers
 - [ ] wifi indicator
