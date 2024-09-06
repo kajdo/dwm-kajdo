@@ -1,8 +1,9 @@
 ## Features missing
-- [ ] "traybar" -- trayer might be a better option than systray patch
+- [x] "traybar" -- used standard systray patch
 - [x] clock in statusbar
 - [x] tags with icons instead of numbers
-- [ ] wifi indicator
+- [x] wifi indicator
+- [ ] focused always on top
 - [ ] tailscale indicator
 
 ## Patches to be applied
