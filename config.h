@@ -54,7 +54,9 @@ static const Rule rules[] = {
 	 */
 	/* class        instance      title        tags mask     isfloating   monitor */
 	{ "Terminator", NULL,         NULL,         0,           1,           -1 },
+	{ "gnome-calculator", NULL,         NULL,         0,           1,           -1 },
 	{ "Brave-browser", NULL,         "Bitwarden",         0,           1,           -1 },
+	{ "crx_nngceckbapebfimnlniiiahkandclblb", NULL,         NULL,         0,           1,           -1 },
 	{ "AlacrittyScratchpad", NULL,         NULL,         0,           1,           -1 },
 };
 
