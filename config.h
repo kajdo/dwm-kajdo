@@ -132,7 +132,7 @@ static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont,
 static const char *termcmd[]  = { "alacritty", NULL };
 static const char *scratchcmd[]  = { "scratch", NULL };
 static const char *wallpaperchangecmd[]  = { "set_random_wallpaper.sh", NULL };
-static const char *maintagcmd[]  = { "main_tag.sh", NULL };
+static const char *autostartcmd[]  = { "dwm_autostart_cmd.sh", NULL };
 static const char *browsercmd[]  = { "browser_start.sh", NULL };
 /*static const char *launchercmd[] = { "rofi", "-show", "drun", NULL };*/
 static const char *launchercmd[] = { "rofi_launch.sh", NULL };
@@ -140,7 +140,7 @@ static const char *screenshotcmd[] = { "flameshot", "gui", NULL };
 
 
 Autostarttag autostarttaglist[] = {
-	{.cmd = maintagcmd, .tags = 1 << 0 },
+	{.cmd = autostartcmd, .tags = 1 << 0 },
 	{.cmd = wallpaperchangecmd, .tags = 1 << 0 },
 	{.cmd = NULL, .tags = 0 },
 };
