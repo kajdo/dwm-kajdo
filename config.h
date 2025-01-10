@@ -141,7 +141,6 @@ static const char *screenshotcmd[] = { "flameshot", "gui", NULL };
 
 Autostarttag autostarttaglist[] = {
 	{.cmd = autostartcmd, .tags = 1 << 0 },
-	{.cmd = wallpaperchangecmd, .tags = 1 << 0 },
 	{.cmd = NULL, .tags = 0 },
 };
 
