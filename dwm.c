@@ -39,6 +39,7 @@
 #ifdef XINERAMA
 #include <X11/extensions/Xinerama.h>
 #endif /* XINERAMA */
+#include <X11/extensions/shape.h>
 #include <X11/Xft/Xft.h>
 
 #include "drw.h"
@@ -270,6 +271,7 @@ static Client *wintosystrayicon(Window w);
 static int xerror(Display *dpy, XErrorEvent *ee);
 static int xerrordummy(Display *dpy, XErrorEvent *ee);
 static int xerrorstart(Display *dpy, XErrorEvent *ee);
+static void drawroundedcorners(Client *c);
 static void zoom(const Arg *arg);
 
 /* variables */
@@ -484,6 +486,7 @@ buttonpress(XEvent *e)
 		selmon = m;
 		focus(NULL);
 	}
+	drawroundedcorners(c);
 	if (ev->window == selmon->barwin) {
 		i = x = 0;
 		do
@@ -1194,6 +1197,10 @@ manage(Window w, XWindowAttributes *wa)
 	c->h = c->oldh = wa->height;
 	c->oldbw = wa->border_width;
 
+	// Set rounded corners for new window
+	if (!c->isfullscreen)
+		drawroundedcorners(c);
+
 	updatetitle(c);
 	if (XGetTransientForHint(dpy, w, &trans) && (t = wintoclient(trans))) {
 		c->mon = t->mon;
@@ -1242,6 +1249,8 @@ manage(Window w, XWindowAttributes *wa)
 	arrange(c->mon);
 	XMapWindow(dpy, c->win);
 	focus(NULL);
+	
+	drawroundedcorners(c);
 }
 
 void
@@ -1495,16 +1504,6 @@ resizeclient(Client *c, int x, int y, int w, int h)
 	if (c->isfloating || c->mon->lt[c->mon->sellt]->arrange == NULL) {
 		gapincr = gapoffset = 0;
 	} else {
-		/* Remove border and gap if layout is monocle or only one client */
-		/*if (c->mon->lt[c->mon->sellt]->arrange == monocle || n == 1) {*/
-		/*if (c->mon->lt[c->mon->sellt]->arrange == monocle) {*/
-		/*	gapoffset = 0;*/
-		/*	gapincr = -2 * borderpx;*/
-		/*	wc.border_width = 0;*/
-		/*} else {*/
-		/*	gapoffset = gappx;*/
-		/*	gapincr = 2 * gappx;*/
-		/*}*/
 		gapoffset = gappx;
 		gapincr = 2 * gappx;
 	}
@@ -1516,6 +1515,11 @@ resizeclient(Client *c, int x, int y, int w, int h)
 
 	XConfigureWindow(dpy, c->win, CWX|CWY|CWWidth|CWHeight|CWBorderWidth, &wc);
 	configure(c);
+	
+	// Update rounded corners after resize
+	if (!c->isfullscreen)
+		drawroundedcorners(c);
+		
 	XSync(dpy, False);
 }
 
@@ -1530,6 +1534,54 @@ resizerequest(XEvent *e)
 		resizebarwin(selmon);
 		updatesystray();
 	}
+}
+
+void
+drawroundedcorners(Client *c) {
+    // if set to zero in config.h, do not attempt to round
+    if(CORNER_RADIUS <= 0 || !c || c->isfullscreen) return;
+
+    Window win = c->win;
+    if(!win) return;
+
+    // set in config.h:
+    int dia = 2 * CORNER_RADIUS;
+    int w = c->w;
+    int h = c->h;
+    if(w < dia || h < dia) return;
+
+    // Create pixmap and GC
+    Pixmap mask = XCreatePixmap(dpy, win, w, h, 1);
+    if(!mask) return;
+
+    XGCValues xgcv;
+    GC shape_gc = XCreateGC(dpy, mask, 0, &xgcv);
+    if(!shape_gc) {
+        XFreePixmap(dpy, mask);
+        return;
+    }
+
+    // Clear mask
+    XSetForeground(dpy, shape_gc, 0);
+    XFillRectangle(dpy, mask, shape_gc, 0, 0, w, h);
+
+    // Draw rounded corners
+    XSetForeground(dpy, shape_gc, 1);
+    XFillArc(dpy, mask, shape_gc, 0, 0, dia, dia, 0, 23040); // top-left
+    XFillArc(dpy, mask, shape_gc, w-dia-1, 0, dia, dia, 0, 23040); // top-right
+    XFillArc(dpy, mask, shape_gc, 0, h-dia-1, dia, dia, 0, 23040); // bottom-left
+    XFillArc(dpy, mask, shape_gc, w-dia-1, h-dia-1, dia, dia, 0, 23040); // bottom-right
+    
+    // Fill in the middle areas
+    XFillRectangle(dpy, mask, shape_gc, CORNER_RADIUS, 0, w-dia, h); // top and bottom
+    XFillRectangle(dpy, mask, shape_gc, 0, CORNER_RADIUS, w, h-dia); // left and right
+
+    // Apply the mask
+    XShapeCombineMask(dpy, win, ShapeBounding, 0, 0, mask, ShapeSet);
+
+    // Clean up
+    XFreePixmap(dpy, mask);
+    XFreeGC(dpy, shape_gc);
 }
 
 void
