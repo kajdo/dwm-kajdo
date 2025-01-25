@@ -60,7 +60,7 @@ static const Rule rules[] = {
 	{ "AlacrittyScratchpad", NULL,         NULL,         0,           1,0,           -1 },
 	/* class      instance    title       tags mask     isfloating   isfakefullscreen monitor */
 	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           1,               -1 },
-	{ "Thorium-browser",  NULL,       NULL,       1 << 8,       0,           1,               -1 },
+	{ "Thorium-browser",  NULL,       NULL,       0,       0,           1,               -1 },
 };
 
 /* layout(s) */
